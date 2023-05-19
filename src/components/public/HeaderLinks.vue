@@ -35,16 +35,22 @@
     <!--choix de la devise-->
     <div class="curr-container">
       <i class="fa-solid fa-arrows-up-down"></i>
-      <div class="curr active" id="curr-xpf">EUR</div>
+      <div
+        @click="this.changeToEur"
+        v-if="isXpf"
+        class="curr active"
+        id="curr-xpf"
+      >
+        EUR
+      </div>
+      <div @click="this.changeToXpf" v-else class="curr active" id="curr-xpf">
+        XPF
+      </div>
     </div>
 
     <!--lien vers la page en anglais-->
     <div class="flags-container">
-      <img
-        id="britflag"
-        src="./images/icons/GB-United-Kingdom-Flag-icon.png"
-        alt=""
-      />
+      <img id="britflag" />
     </div>
   </div>
 </template>
@@ -57,6 +63,9 @@ export default {
 
   data() {
     return {
+      isXpf: true,
+      currency: "",
+      currconv: "",
       item: [],
       itemname: "",
       notfound: false,
@@ -64,7 +73,13 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getProducts"]),
+    ...mapGetters(["getProducts", "getCurrency", "getCurrconv"]),
+  },
+
+  mounted() {
+    if (this.getCurrency == "eur") {
+      this.isXpf = false;
+    }
   },
 
   unmounted() {
@@ -73,7 +88,23 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["changeItem"]),
+    ...mapMutations(["changeItem", "changeCurrency", "changeCurrconv"]),
+
+    changeToEur() {
+      this.isXpf = false;
+      this.currency = "eur";
+      this.currconv = 0.0084;
+      this.changeCurrency(this.currency);
+      this.changeCurrconv(this.currconv);
+    },
+    changeToXpf() {
+      this.isXpf = true;
+      this.currency = "xpf";
+      this.currconv = 1;
+      this.changeCurrency(this.currency);
+      this.changeCurrconv(this.currconv);
+    },
+
     updateItem(e) {
       this.itemname = e.target.value;
       this.item = this.getProducts.filter((e) => {

@@ -24,7 +24,8 @@
         <div id="items-container-content-item__description">
           {{ item.title.toUpperCase() }}
           <div id="items-container-content-item__price">
-            {{ item.price.toFixed([0]) }}
+            {{ (item.price * this.getCurrconv).toFixed([0]) }}
+            {{ this.getCurrency }}
           </div>
         </div>
       </div>
@@ -46,7 +47,13 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getCategory", "getItemsByCategory", "getHeaderPicture"]),
+    ...mapGetters([
+      "getCategory",
+      "getItemsByCategory",
+      "getHeaderPicture",
+      "getCurrency",
+      "getCurrconv",
+    ]),
   },
   methods: {
     ...mapMutations(["changeItem"]),

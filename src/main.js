@@ -11,6 +11,8 @@ const app = createApp(App);
 //elements, getters et mutations du state
 const store = createStore({
   state: {
+    currency: "xpf",
+    currconv: 1,
     lookbook: [],
     links: [],
     products: [],
@@ -21,8 +23,16 @@ const store = createStore({
     item: [],
     category: "nouveautes",
     users: [],
+    cart: [],
+    wishlist: [],
   },
   getters: {
+    getCurrency(state) {
+      return state.currency;
+    },
+    getCurrconv(state) {
+      return state.currconv;
+    },
     getLookbook(state) {
       return state.lookbook;
     },
@@ -56,8 +66,20 @@ const store = createStore({
     getUsers(state) {
       return state.users;
     },
+    getCart(state) {
+      return state.cart;
+    },
+    getWishlist(state) {
+      return state.wishlist;
+    },
   },
   mutations: {
+    changeCurrency(state, value) {
+      state.currency = value;
+    },
+    changeCurrconv(state, value) {
+      state.currconv = value;
+    },
     changeLinks(state, value) {
       state.links = value;
     },
@@ -87,6 +109,12 @@ const store = createStore({
     },
     changeUsers(state, value) {
       state.users = value;
+    },
+    changeCart(state, value) {
+      state.cart = value;
+    },
+    changeWishlist(state, value) {
+      state.wishlist = value;
     },
   },
 });

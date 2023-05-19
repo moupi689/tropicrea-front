@@ -17,8 +17,20 @@ let deleteUser = (id) => {
   return Axios.delete("/api/admin/users/" + id);
 };
 
+//récupérer le panier d'un utilisateur
+let getCart = () => {
+  return Axios.get("/api/cart");
+};
+
+//récupérer le panier d'un utilisateur
+let getWishlist = () => {
+  return Axios.get("/api/cart");
+};
+
 export const userService = {
   getAllUsers,
   findUser,
   deleteUser,
+  getCart,
+  getWishlist,
 };

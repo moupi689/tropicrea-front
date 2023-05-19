@@ -80,6 +80,24 @@ export default {
       })
       .catch((err) => console.log(err));
 
+    //récupération du panier d'un utilisateur
+    userService
+      .getCart()
+      .then((res) => {
+        this.cart = res.data;
+        this.updateCart();
+      })
+      .catch((err) => console.log(err));
+
+    //récupération de la wishlist d'un utilisateur
+    userService
+      .getWishlist()
+      .then((res) => {
+        this.wishlist = res.data;
+        this.updateWishlist();
+      })
+      .catch((err) => console.log(err));
+
     ///*** partie admin ***/
 
     //récupération des utilisateurs
@@ -100,6 +118,8 @@ export default {
       "changeLinks",
       "changeLookbook",
       "changeUsers",
+      "changeCart",
+      "changeWishlist",
     ]),
     updateLinks() {
       this.changeLinks(this.links);
@@ -121,6 +141,12 @@ export default {
     },
     updateUsers() {
       this.changeUsers(this.users);
+    },
+    updateCart() {
+      this.changeCart(this.cart);
+    },
+    updateWishlist() {
+      this.changeWishlist(this.wishlist);
     },
   },
 

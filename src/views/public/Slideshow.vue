@@ -14,7 +14,10 @@
       <div class="item-description">
         <div class="item-header">
           <div id="item-name">{{ getItem[0].title.toUpperCase() }}</div>
-          <div id="item-price">{{ getItem[0].price }}</div>
+          <div id="item-price">
+            {{ (getItem[0].price * this.getCurrconv).toFixed([0]) }}
+            {{ this.getCurrency }}
+          </div>
         </div>
         <div id="item-description--text">{{ getItem[0].description }}</div>
         <p id="item-description--fabric">Matière : {{ getItem[0].fabric }}</p>
@@ -82,7 +85,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getItem", "getFabrics"]),
+    ...mapGetters(["getItem", "getFabrics", "getCurrency", "getCurrconv"]),
   },
 
   mounted() {
