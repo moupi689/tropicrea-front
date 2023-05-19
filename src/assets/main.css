@@ -1,0 +1,16 @@
+@import url("https://fonts.googleapis.com/css2?family=Arima&family=Playfair+Display&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arima", cursive, sans-serif;
+}
+
+:root {
+  --main-color: rgba(228, 211, 219, 0.7);
+  --second-color: rgb(209, 188, 177, 0.5);
+  --third-color: rgb(255, 247, 221, 0.3);
+  --box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);
+  --border: 1px solid rgba(0, 0, 0, 0.2);
+}
