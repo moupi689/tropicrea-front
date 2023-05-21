@@ -7,12 +7,16 @@
         <router-link to="/infos/shops"
           ><li>Nos points de vente</li></router-link
         >
-        <router-link to="/lookbook"><li>Look Book</li></router-link>
+        <router-link to="/infos/showrooms"><li>Expositions</li></router-link>
+        <router-link to="/mesmesures"><li>Le sur-mesure</li></router-link>
       </ul>
     </div>
     <div class="footer__middle-left">
       <h3>AIDE</h3>
       <ul>
+        <router-link to="/infos/tailles"
+          ><li>Guide des tailles</li></router-link
+        >
         <router-link to="/infos/payment"><li>Paiement</li></router-link>
         <router-link to="/infos/delivery"><li>Livraisons</li></router-link>
         <router-link to="/infos/returns"><li>Retours</li></router-link>

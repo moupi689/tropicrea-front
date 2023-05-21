@@ -42,6 +42,8 @@
 
 <script>
 import router from "@/router";
+import { mapMutations } from "vuex";
+
 import { accountService } from "@/_services";
 
 export default {
@@ -54,13 +56,19 @@ export default {
       },
     };
   },
+
+  beforeUnmount() {
+    this.getCart();
+    this.getWishlist();
+  },
+
   methods: {
+    ...mapMutations(["changeUserSessionID"]),
     login() {
       if (this.user.email == "admin@admin") {
         //login admin
         accountService
           .loginAdmin(this.user)
-
           .then((res) => {
             const token = res.data.token;
             if (token != undefined) {
@@ -78,7 +86,12 @@ export default {
           .then((res) => {
             const data = res.data;
             console.log(data);
-            localStorage.setItem("sessionId", data.sessionId);
+            localStorage.setItem(
+              "tropicrea_user_session",
+              data.tropicrea_user_session
+            );
+            const id = data.tropicrea_user_session;
+            this.changeUserSessionID(id);
             this.$router.push("/");
           })
           .catch((err) => console.log(err));
@@ -89,6 +102,12 @@ export default {
       if (this.user.email === "admin@admin") {
         toggle.style.display = "flex";
       }
+    },
+    getCart() {
+      console.log("test getcart");
+    },
+    getWishlist() {
+      console.log("test getwishlist");
     },
   },
 };

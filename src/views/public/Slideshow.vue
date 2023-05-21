@@ -4,9 +4,13 @@
     <div class="slideshow-container" id="slideshow-container">
       <!--slideshow-->
       <div class="item-slideshow" id="item-slideshow">
-        <div class="item-slideshow-info" id="item__instock">
+        <div class="item-slideshow-info">
           {{ this.instock }}
         </div>
+        <i
+          @click="addToWishlist"
+          class="fa-regular fa-heart item-towishlist"
+        ></i>
         <img :src="this.picture" alt="" id="slideshow-pic" />
       </div>
 
@@ -34,32 +38,15 @@
         <p>Tailles :</p>
         <div class="item-size">
           <ul>
-            <li class="pick-size" title="S" id="Ssize">S</li>
-            <li class="pick-size" title="M" id="Msize">M</li>
-            <li class="pick-size" title="L" id="Lsize">L</li>
-            <li class="pick-size" title="XL" id="XLsize">XL</li>
+            <li @click="pickSize" class="pick-size" title="S" id="Ssize">S</li>
+            <li @click="pickSize" class="pick-size" title="M" id="Msize">M</li>
+            <li @click="pickSize" class="pick-size" title="L" id="Lsize">L</li>
+            <li @click="pickSize" class="pick-size" title="XL" id="XLsize">
+              XL
+            </li>
           </ul>
-          <div>
-            <router-link to="/mesmesures"
-              ><div
-                class="item-size-guide"
-                title="prendre mes mesures"
-                id="surMesure"
-              >
-                <i class="fa-solid fa-ruler"></i>
-                Sur-mesure
-              </div></router-link
-            >
-            <router-link to="/infos/tailles"
-              ><div class="item-size-guide" id="sizeguide">
-                <i class="fa-solid fa-ruler"></i>
-                Guide des tailles
-              </div></router-link
-            >
-          </div>
         </div>
-        <div id="addToBasket">Ajouter au panier</div>
-        <div id="addToWishlist">Ajouter à la wishlist</div>
+        <div @click="addToBasket" id="addToBasket">Ajouter au panier</div>
       </div>
     </div>
   </div>
@@ -68,6 +55,10 @@
 <script>
 import GoBackLink from "../../components/public/GoBackLink.vue";
 
+import Axios from "@/_services/caller.service";
+
+import { userService } from "@/_services";
+
 import { mapGetters, mapMutations } from "vuex";
 
 export default {
@@ -75,20 +66,40 @@ export default {
 
   data() {
     return {
+      id: "",
       itempictures: [],
       picture: "",
       fabrics: [],
       instock: "",
       curIndex: "0",
       timeout: "",
+      _id: "",
+      thumbnail: "",
+      title: "",
+      size: "",
+      price: "",
     };
   },
 
   computed: {
-    ...mapGetters(["getItem", "getFabrics", "getCurrency", "getCurrconv"]),
+    ...mapGetters([
+      "getItem",
+      "getFabrics",
+      "getCurrency",
+      "getCurrconv",
+      "getUserSessionID",
+      "getVisitorSessionID",
+    ]),
   },
 
   mounted() {
+    if (this.getUserSessionID) {
+      this.id = this.user_sessionID;
+    } else {
+      this.id = this.getVisitorSessionID;
+    }
+    console.log(this.id);
+
     this.slideShow();
     if (this.getItem[0].inStock) {
       this.instock = "en stock";
@@ -99,6 +110,7 @@ export default {
       return elt.fabricname == this.getItem[0].fabric;
     });
   },
+
   unmounted() {
     this.item = [];
     this.changeItem(this.item);
@@ -106,7 +118,7 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["changeItem"]),
+    ...mapMutations(["changeItem", "changeCart", "changeWishlist"]),
     slideShow() {
       this.itempictures = Object.values(this.getItem[0].pictures);
       this.picture = this.itempictures[this.curIndex];
@@ -115,6 +127,66 @@ export default {
         this.curIndex = 0;
       }
       this.timeout = setTimeout(this.slideShow, 2000);
+    },
+    pickSize(e) {
+      e.target.classList.toggle("active");
+      this.size = e.target.title;
+      console.log(this.size);
+    },
+
+    addToBasket(e) {
+      if (!this.size) {
+        alert("Veuillez choisir une taille");
+      } else {
+        return Axios.post(
+          "/api/cart/item/" + this.id,
+          {
+            _id: this.getItem[0]._id,
+            thumbnail: this.getItem[0].pictures.picture1,
+            title: this.getItem[0].title,
+            size: this.size,
+            price: this.getItem[0].price,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        ).then((res) => {
+          console.log(res.data);
+          userService
+            .getCart(this.id)
+            .then((res) => {
+              this.cart = res.data;
+              this.changeCart(this.cart);
+            })
+            .catch((err) => console.log(err));
+        });
+      }
+    },
+    addToWishlist() {
+      return Axios.post(
+        "/api/wishlist/item/" + this.id,
+        {
+          _id: this.getItem[0]._id,
+          thumbnail: this.getItem[0].pictures.picture1,
+          title: this.getItem[0].title,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      ).then((res) => {
+        console.log(res.data);
+        userService
+          .getWishlist(this.id)
+          .then((res) => {
+            this.wishlist = res.data;
+            this.changeWishlist(this.wishlist);
+          })
+          .catch((err) => console.log(err));
+      });
     },
   },
   components: {
@@ -159,6 +231,36 @@ export default {
   border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
+.item-wishlist-info {
+  display: flex;
+  position: absolute;
+  right: 20px;
+  top: 130px;
+  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  padding: 2px;
+  background-color: rgba(246, 234, 240, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.item-towishlist {
+  display: flex;
+  position: absolute;
+  transform: scale(2);
+  right: 45px;
+  top: 80px;
+}
+
+.item-towishlist:hover {
+  cursor: pointer;
+  transform: scale(2.2);
+}
+
+.item-towishlist:active {
+  cursor: pointer;
+  transform: scale(1.8);
+}
+
 #item-description--tissues {
   display: flex;
   flex-wrap: nowrap;
@@ -181,12 +283,13 @@ export default {
 
 .displaytissues__img--tissue:hover {
   cursor: pointer;
-  transform: scale(5);
+  transform: scale(4);
 }
 
 .slideshow-container > .item-description {
   display: flex;
   flex-direction: column;
+  gap: 30px;
   width: 28vw;
   padding: 20px;
   background-color: rgba(246, 234, 240, 0.7);
@@ -252,19 +355,6 @@ export default {
 .pick-size.active {
   transform: scale(0.95);
   background-color: rgba(209, 188, 177, 0.4);
-}
-
-.item-size-guide {
-  display: flex;
-  justify-content: left;
-  align-items: center;
-  transition: 0.2s ease;
-  margin-top: 10px;
-}
-
-.item-size-guide:hover {
-  transform: scale(1.02);
-  cursor: pointer;
 }
 
 #addToBasket,

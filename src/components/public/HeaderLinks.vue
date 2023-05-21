@@ -1,11 +1,17 @@
 <template>
   <div class="header__links">
-    <router-link to="/signin"
-      ><p class="connection-icon active" id="toConnect">
-        Connexion
-      </p></router-link
+    <p
+      @click="toLogout"
+      v-if="isConnected"
+      @mouseover="hover = true"
+      @mouseleave="hover = false"
+      class="connection-icon red"
     >
-    <p class="connection-icon" id="logout">Ia Orana !</p>
+      {{ connected }}
+    </p>
+    <router-link v-else to="/signin"
+      ><p class="connection-icon">Connexion</p></router-link
+    >
 
     <!--recherche d'un produit par son nom-->
     <div class="searchbar">
@@ -24,12 +30,18 @@
       <!--lien vers la wishlist et le panier-->
     </div>
     <div class="postit-container">
-      <i class="fa-regular fa-heart" id="toWishlist"></i>
-      <div id="wishlist-postit"></div>
+      <router-link to="/mawishlist"
+        ><i class="fa-regular fa-heart icon"></i
+      ></router-link>
+      <!--<div id="wishlist-postit">
+        {{ this.wishLength }}
+      </div>-->
     </div>
     <div class="postit-container">
-      <i class="fa-solid fa-cart-shopping" id="toBasket"></i>
-      <div id="basket-postit"></div>
+      <router-link to="/monpanier"
+        ><i class="fa-solid fa-cart-shopping icon"></i
+      ></router-link>
+      <!--<div id="basket-postit">{{ this.cartLength }}</div>-->
     </div>
 
     <!--choix de la devise-->
@@ -58,37 +70,77 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 
+import { accountService, userService } from "@/_services";
+
 export default {
   name: "HeaderBar",
 
   data() {
     return {
+      user_id: "",
+      hover: false,
+      connected: "Deconnexion",
+      isConnected: false,
       isXpf: true,
       currency: "",
       currconv: "",
       item: [],
       itemname: "",
       notfound: false,
+      cartLength: "",
+      wishLength: "",
     };
   },
 
   computed: {
-    ...mapGetters(["getProducts", "getCurrency", "getCurrconv"]),
+    ...mapGetters([
+      "getProducts",
+      "getCurrency",
+      "getCurrconv",
+      "getWishlist",
+      "getCartLength",
+      "getWishLength",
+      "getUserSessionID",
+    ]),
   },
 
   mounted() {
+    console.log("test mounted");
+
+    //choix de la monnaie
     if (this.getCurrency == "eur") {
       this.isXpf = false;
     }
+
+    //si utilisateur enregistré
+    this.user_id = this.getUserSessionID;
+    console.log(this.user_id);
+
+    if (this.user_id) {
+      this.isConnected = true;
+    }
+    this.cartLength = this.getCartLength;
+    this.wishLength = this.getWishLength;
+  },
+
+  updated() {
+    console.log("test updated");
   },
 
   unmounted() {
     this.item = [];
+    this.id = "";
     this.changeItem(this.item);
   },
 
   methods: {
-    ...mapMutations(["changeItem", "changeCurrency", "changeCurrconv"]),
+    ...mapMutations([
+      "changeItem",
+      "changeItemsByCategory",
+      "changeCurrency",
+      "changeCurrconv",
+      "changeUserSessionID",
+    ]),
 
     changeToEur() {
       this.isXpf = false;
@@ -115,14 +167,21 @@ export default {
         setTimeout(this.resetAlert, 1000);
       } else {
         this.changeItem(this.item);
-        this.redirect();
+        this.$router.push({ path: "/slideshow" });
       }
-    },
-    redirect() {
-      this.$router.push({ path: "/slideshow" });
     },
     resetAlert() {
       this.notfound = false;
+    },
+
+    toWishlist() {
+      console.log(this.getWishlist.wish.items);
+    },
+
+    toLogout() {
+      accountService.logoutUser();
+      this.changeUserSessionID();
+      this.isConnected = false;
     },
   },
 };
@@ -142,9 +201,7 @@ export default {
   display: flex;
   position: relative;
 }
-.postit-container > .fa-heart {
-  transform: scale(1.5);
-}
+
 .connection-icon {
   font-size: calc(13px + 0.4vw);
   text-align: center;
@@ -160,6 +217,11 @@ export default {
   cursor: pointer;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
 }
+
+.red {
+  color: rgb(244, 58, 58);
+}
+
 .flags-container {
   display: flex;
   flex-direction: column;
@@ -182,29 +244,16 @@ export default {
   cursor: pointer;
 }
 
-.postit-container > i {
-  margin: 10px;
-  transform: scale(1.3);
+.icon {
+  transform: scale(1.5);
 }
-.postit-container > i:hover {
+.postit-container > .fa-solid:hover {
   cursor: pointer;
-}
-
-#logout {
-  display: none;
-  background-color: rgba(209, 188, 177, 0.8);
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-}
-
-#logout:hover {
-  cursor: pointer;
-  transform: scale(1.02);
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
 }
 
 .curr-container {
   display: flex;
-  align-items: center;
+  align-items: baseline;
 }
 
 .curr-container > i {
@@ -230,12 +279,12 @@ export default {
   display: flex;
   align-items: center;
 }
-.searchbar > #searchProduct-form {
+#searchProduct-form {
   display: flex;
   position: relative;
   gap: 10px;
 }
-.searchbar > #searchProduct-form > #searchProduct-input {
+#searchProduct-input {
   font-size: calc(13px + 0.4vw);
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.2);
@@ -256,8 +305,8 @@ export default {
   color: rgba(155, 46, 46, 0.9);
   position: absolute;
   font-weight: bolder;
-  font-size: 0.8em;
-  left: 80%;
+  font-size: 0.9em;
+  left: 25px;
   top: -3px;
   height: 20px;
   width: 20px;

@@ -19,31 +19,27 @@
         <form id="signupForm" @submit.prevent="signup">
           <input
             type="email"
-            v-model="user.login"
+            v-model="login"
             class="form-control"
             placeholder="@adresse mail"
-            id="signupEmail"
           />
           <input
             type="text"
-            v-model="user.name"
+            v-model="name"
             class="form-control"
             placeholder="@nom (facultatif) "
-            id="signupName"
           />
           <input
             type="text"
-            v-model="user.firstname"
+            v-model="firstname"
             class="form-control"
             placeholder="@prénom (facultatif)"
-            id="signupFirstname"
           />
           <input
             type="text"
-            v-model="user.phone"
+            v-model="phone"
             class="form-control"
             placeholder="@téléphone (facultatif)"
-            id="signupPhone"
           />
           <button class="formButton" type="submit" id="signupbtn">
             Inscription
@@ -55,22 +51,55 @@
 </template>
 
 <script>
+import Axios from "@/_services/caller.service";
+
+import { userService } from "@/_services";
+
+import { mapMutations } from "vuex";
+
 export default {
   name: "SignUp",
   data() {
     return {
-      user: {
-        login: "",
-        name: "",
-        firstname: "",
-        phone: "",
-      },
+      login: "",
+      name: "",
+      firstname: "",
+      phone: "",
     };
   },
   methods: {
+    ...mapMutations(["changeUsers"]),
+
     signup() {
-      console.log(this.user.login);
-      console.log(this.user.name);
+      console.log(this.login);
+
+      return Axios.post(
+        "/api/users/signup",
+        {
+          email: this.login,
+          name: this.name,
+          firstname: this.firstname,
+          phone: this.phone,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+        .then((res) => {
+          const data = res.data;
+          userService
+            .getAllUsers()
+            .then((res) => {
+              this.users = res.data;
+              console.log(this.users);
+              localStorage.setItem("sessionId", data.sessionId);
+              this.changeUsers(this.users);
+            })
+            .catch((err) => console.log(err));
+        })
+        .then(this.$router.push({ path: "/" }));
     },
   },
 };

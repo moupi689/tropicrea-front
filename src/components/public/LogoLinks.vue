@@ -1,5 +1,8 @@
 <template>
   <div class="logo__links">
+    <router-link to="/lookbook" class="logo-link emph" id="giftcard"
+      >LOOK BOOK</router-link
+    >
     <a title="mode homme" class="logo-link" id="homme" @click="updateCategory"
       >HOMME</a
     >
@@ -20,7 +23,7 @@
       @click="updateCategory"
       >BIJOUX</a
     >
-    <router-link to="/giftcard" class="logo-link giftcard" id="giftcard"
+    <router-link to="/giftcard" class="logo-link emph" id="giftcard"
       >CARTE-CADEAU</router-link
     >
   </div>
@@ -77,9 +80,14 @@ export default {
   transition: 0.2s ease;
 }
 
-.logo-link.giftcard {
+.logo-link.emph {
   color: rgba(155, 46, 46, 0.9);
   text-shadow: 2px 2px 8px rgba(155, 46, 46, 0.5);
+}
+
+.logo-link.lookbook {
+  color: rgb(219, 129, 180);
+  text-shadow: 2px 2px 3px rgba(155, 46, 46, 0.5);
 }
 
 .logo__links > .logo-link:hover {

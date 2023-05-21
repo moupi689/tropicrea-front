@@ -20,29 +20,38 @@
         >
           <div class="subformLayout">
             <label for="images">A l'attention de:</label>
-            <input type="text" class="form-control" id="signupEmail" />
+            <input
+              v-model="name"
+              type="text"
+              class="form-control"
+              id="signupEmail"
+            />
           </div>
           <div class="df-aic-jcc">
             <div
+              @click="pickAmount"
               class="giftcard__choice df-aic-jcc p10 bg-b-bs bgcolor2 br10"
-              id="choice5"
+              title="5000"
             >
               5000 XPF
             </div>
             <div
+              @click="pickAmount"
               class="giftcard__choice df-aic-jcc p10 bg-b-bs bgcolor2 br10"
-              id="choice10"
+              title="10000"
             >
               10 000 XPF
             </div>
             <div
+              @click="pickAmount"
               class="giftcard__choice df-aic-jcc p10 bg-b-bs bgcolor2 br10"
-              id="choice15"
+              title="20000"
             >
               20 000 XPF
             </div>
           </div>
           <button
+            @click="addToBasket"
             class="giftcard__btn bg-b-bs bgcolor2 br10"
             id="giftcard__btn"
           >
@@ -59,6 +68,54 @@ import GoBackLink from "../../components/public/GoBackLink.vue";
 
 export default {
   name: "Giftcard",
+
+  data() {
+    return {
+      name: "",
+      amount: "",
+    };
+  },
+
+  methods: {
+    pickAmount(e) {
+      e.target.classList.toggle("active");
+      this.amount = e.target.title;
+      console.log(this.amount);
+    },
+
+    addToBasket(e) {
+      if (!this.amount) {
+        alert("Veuillez choisir un montant");
+      } else {
+        console.log(this.amount);
+        console.log(this.name);
+        /*return Axios.post(
+          "/api/cart/item",
+          {
+            _id: this.getItem[0]._id,
+            thumbnail: this.getItem[0].pictures.picture1,
+            title: this.getItem[0].title,
+            size: this.size,
+            price: this.getItem[0].price,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        ).then((res) => {
+          console.log(res.data);
+          userService
+            .getCart()
+            .then((res) => {
+              this.cart = res.data;
+              this.changeCart(this.cart);
+            })
+            .catch((err) => console.log(err));
+        });*/
+      }
+    },
+  },
   components: {
     GoBackLink,
   },

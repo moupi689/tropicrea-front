@@ -18,13 +18,23 @@ let deleteUser = (id) => {
 };
 
 //récupérer le panier d'un utilisateur
-let getCart = () => {
-  return Axios.get("/api/cart");
+let getCart = (id) => {
+  return Axios.get("/api/cart/" + id);
 };
 
-//récupérer le panier d'un utilisateur
-let getWishlist = () => {
-  return Axios.get("/api/cart");
+//supprimer le panier d'un utilisateur
+let deleteCart = (id) => {
+  return Axios.delete("/api/cart/" + id);
+};
+
+//récupérer la wishlist d'un utilisateur
+let getWishlist = (id) => {
+  return Axios.get("/api/wishlist/" + id);
+};
+
+//supprimer la wishlist d'un utilisateur
+let deleteWishlist = (id) => {
+  return Axios.delete("/api/wishlist/" + id);
 };
 
 export const userService = {
@@ -32,5 +42,7 @@ export const userService = {
   findUser,
   deleteUser,
   getCart,
+  deleteCart,
   getWishlist,
+  deleteWishlist,
 };

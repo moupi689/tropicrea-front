@@ -11,6 +11,8 @@ const app = createApp(App);
 //elements, getters et mutations du state
 const store = createStore({
   state: {
+    user_sessionID: "",
+    visitor_sessionID: "",
     currency: "xpf",
     currconv: 1,
     lookbook: [],
@@ -23,10 +25,18 @@ const store = createStore({
     item: [],
     category: "nouveautes",
     users: [],
-    cart: [],
-    wishlist: [],
+    cart: null,
+    cartLength: "",
+    wishlist: null,
+    wishLength: "",
   },
   getters: {
+    getUserSessionID(state) {
+      return state.user_sessionID;
+    },
+    getVisitorSessionID(state) {
+      return state.visitor_sessionID;
+    },
     getCurrency(state) {
       return state.currency;
     },
@@ -69,16 +79,28 @@ const store = createStore({
     getCart(state) {
       return state.cart;
     },
+    getCartLength(state) {
+      return state.cartLength;
+    },
     getWishlist(state) {
       return state.wishlist;
     },
+    getWishLength(state) {
+      return state.wishLength;
+    },
   },
   mutations: {
-    changeCurrency(state, value) {
-      state.currency = value;
+    changeUserSessionID(state, value) {
+      state.user_sessionID = value;
+    },
+    changeVisitorSessionID(state, value) {
+      state.visitor_sessionID = value;
     },
     changeCurrconv(state, value) {
       state.currconv = value;
+    },
+    changeCurrency(state, value) {
+      state.currency = value;
     },
     changeLinks(state, value) {
       state.links = value;
@@ -113,8 +135,14 @@ const store = createStore({
     changeCart(state, value) {
       state.cart = value;
     },
+    changeCartLength(state, value) {
+      state.cartLength = value;
+    },
     changeWishlist(state, value) {
       state.wishlist = value;
+    },
+    changeWishLength(state, value) {
+      state.wishLength = value;
     },
   },
 });

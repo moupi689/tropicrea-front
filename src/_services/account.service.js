@@ -21,8 +21,12 @@ let isLogged = () => {
   return !!token; //transforme un string en booleen. Si pas de token !!>false, sinon true
 };
 
-let logout = () => {
+let logoutAdmin = () => {
   localStorage.removeItem("token");
+};
+
+let logoutUser = () => {
+  localStorage.removeItem("tropicrea_user_session");
 };
 
 export const accountService = {
@@ -30,5 +34,6 @@ export const accountService = {
   loginUser,
   saveToken,
   isLogged,
-  logout,
+  logoutAdmin,
+  logoutUser,
 };

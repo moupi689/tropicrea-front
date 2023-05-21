@@ -7,6 +7,7 @@ import SignUp from "../views/auth/SignUp.vue";
 
 import Giftcard from "@/components/public/Giftcard.vue";
 import InfoBrand from "@/components/public/InfoBrand.vue";
+import InfoShowrooms from "@/components/public/InfoShowrooms.vue";
 import InfoShops from "@/components/public/InfoShops.vue";
 import InfoPayment from "@/components/public/InfoPayment.vue";
 import InfoDelivery from "@/components/public/InfoDelivery.vue";
@@ -25,6 +26,10 @@ import ProductsDashboard from "@/components/admin/ProductsDashboard.vue";
 import AddProduct from "@/components/admin/AddProduct.vue";
 import FindProduct from "@/components/admin/FindProduct.vue";
 import GetProducts from "@/components/admin/GetProducts.vue";
+
+import Cart from "../views/public/Cart.vue";
+import Wishlist from "../views/public/Wishlist.vue";
+import Checkout from "../views/public/Checkout.vue";
 
 import Links from "@/components/admin/Links.vue";
 
@@ -79,6 +84,11 @@ const router = createRouter({
           component: InfoShops,
         },
         {
+          path: "/infos/showrooms",
+          name: "InfoShowrooms",
+          component: InfoShowrooms,
+        },
+        {
           path: "/infos/payment",
           name: "InfoPayment",
           component: InfoPayment,
@@ -107,6 +117,21 @@ const router = createRouter({
           path: "/lookbook",
           name: "LookBook",
           component: LookBook,
+        },
+        {
+          path: "/monpanier",
+          name: "Cart",
+          component: Cart,
+        },
+        {
+          path: "/mawishlist",
+          name: "Wishlist",
+          component: Wishlist,
+        },
+        {
+          path: "/checkout",
+          name: "Checkout",
+          component: Checkout,
         },
       ],
     },
